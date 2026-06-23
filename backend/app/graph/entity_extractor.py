@@ -8,11 +8,6 @@ from app.services.llm import llm
 
 load_dotenv()
 
-llm = ChatGroq(
-    model="llama-3.3-70b-versatile",
-    groq_api_key=os.getenv("GROQ_API_KEY")
-)
-
 prompt = ChatPromptTemplate.from_template("""
 You are an Industrial Knowledge Graph Extraction System.
 
@@ -66,4 +61,97 @@ Output Schema:
     }}
   ]
 }}
+                                          
+Relationship direction rules:
+
+Person INSPECTED Equipment
+Document REFERENCES Equipment
+Equipment COMPLIES_WITH Standard
+Equipment FAILED_DUE_TO Incident
+Equipment LOCATED_IN Location
+                                          
+                                          
+Expected output(Example) :
+{{
+  "entities": [
+    {{
+      "name": "Pump P-101",
+      "type": "equipment"
+    }},
+    {{
+      "name": "John Smith",
+      "type": "person"
+    }},
+    {{
+      "name": "bearing overheating",
+      "type": "incident"
+    }},
+    {{
+      "name": "WO-1234",
+      "type": "document"
+    }},
+    {{
+      "name": "ISO 9001",
+      "type": "standard"
+    }}
+  ],
+  "relationships": [
+    {{
+      "source": "Pump P-101",
+      "relation": "FAILED_DUE_TO",
+      "target": "bearing overheating"
+    }},
+    {{
+      "source": "John Smith",
+      "relation": "INSPECTED",
+      "target": "Pump P-101"
+    }},
+    {{
+      "source": "WO-1234",
+      "relation": "REFERENCES",
+      "target": "Pump P-101"
+    }},
+    {{
+      "source": "Pump P-101",
+      "relation": "COMPLIES_WITH",
+      "target": "ISO 9001"
+    }}
+  ]
+}}
 """)
+
+def extract_entities(text):
+
+    messages = prompt.format_messages(text=text)
+
+    response = llm.invoke(messages)
+
+    content = response.content.strip()
+
+    if content.startswith("```json"):
+        content = content.replace("```json", "")
+        content = content.replace("```", "").strip()
+
+    try:
+        return json.loads(content)
+
+    except Exception as e:
+        print(f"JSON Parse Error: {e}")
+        print(content)
+
+        return {
+            "entities": [],
+            "relationships": []
+        }
+    
+
+if __name__ == "__main__":
+
+    sample_text = """
+    Pump P-101 was inspected by John Smith.
+    Pump P-101 complies with ISO 9001.
+    """
+
+    result = extract_entities(sample_text)
+
+    print(json.dumps(result, indent=2))

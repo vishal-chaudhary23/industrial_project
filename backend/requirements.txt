@@ -1,4 +1,4 @@
-langchain==0.3.25
+langchain
 langchain_community
 python-dotenv
 langchain_groq
@@ -12,3 +12,5 @@ sentence-transformers
 tiktoken
 pinecone-client==3.2.2
 pinecone-text==0.11.0
+langchain-neo4j
+neo4j
