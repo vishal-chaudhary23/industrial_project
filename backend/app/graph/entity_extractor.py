@@ -145,13 +145,13 @@ def extract_entities(text):
         }
     
 
-if __name__ == "__main__":
+# if __name__ == "__main__":
 
-    sample_text = """
-    Pump P-101 was inspected by John Smith.
-    Pump P-101 complies with ISO 9001.
-    """
+#     sample_text = """
+#     Pump P-101 was inspected by John Smith.
+#     Pump P-101 complies with ISO 9001.
+#     """
 
-    result = extract_entities(sample_text)
+#     result = extract_entities(sample_text)
 
-    print(json.dumps(result, indent=2))
+#     print(json.dumps(result, indent=2))
