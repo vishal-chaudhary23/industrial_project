@@ -5,8 +5,10 @@ def get_entity_relations(entity_name):
     query = """
     MATCH (e)-[r]->(n)
     WHERE toLower(e.name) CONTAINS toLower($name)
-    RETURN type(r) as relation,
-        n.name as target
+    RETURN
+        type(r) AS relation,
+        n.name AS target
+
     """
 
     return graph.query(

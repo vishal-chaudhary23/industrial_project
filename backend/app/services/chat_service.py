@@ -13,58 +13,62 @@ from app.services.llm import llm
 from app.graph.graph_context import build_graph_context
 from app.graph.entity_extractor import extract_entities
 
+# keywoard matching method
+# from app.prompts.prompts import (
+#     general_prompt,
+#     maintenance_prompt,
+#     compliance_prompt,
+#     lessons_prompt
+# )
+
+# router method
+from app.agents.router import route_query
 
 
-prompt = ChatPromptTemplate.from_template("""
-You are an Industrial Intelligence Assistant for manufacturing, maintenance, quality, and compliance operations.
 
-Use the provided information to answer the user's question.
 
-Information Sources:
+# prompt = ChatPromptTemplate.from_template("""
+# You are an Industrial Intelligence Assistant for manufacturing, maintenance, quality, and compliance operations.
 
-1. Vector Context
-- Contains relevant document excerpts retrieved from industrial documents.
-- Use it for detailed facts, procedures, measurements, incidents, reports, and document content.
+# Use the provided information to answer the user's question.
 
-2. Graph Context
-- Contains entity relationships extracted from the knowledge graph.
-- Use it to understand connections between equipment, people, standards, documents, incidents, and locations.
+# Information Sources:
+
+# 1. Vector Context
+# - Contains relevant document excerpts retrieved from industrial documents.
+# - Use it for detailed facts, procedures, measurements, incidents, reports, and document content.
+
+# 2. Graph Context
+# - Contains entity relationships extracted from the knowledge graph.
+# - Use it to understand connections between equipment, people, standards, documents, incidents, and locations.
                                           
-If Graph Context contains relevant information, prioritize it.
+# If Graph Context contains relevant information, prioritize it.
 
-Instructions:
-- Combine information from BOTH contexts whenever possible.
-- Prefer facts found in the provided contexts.
-- Do NOT invent information.
-- If the answer cannot be determined from the provided contexts, say so.
-- Explain relationships when they are relevant.
-- Mention equipment IDs, document IDs, standards, and incident names exactly as provided.
-- Keep answers concise but informative.
-- When listing standards, incidents, related equipment, or relationships, include ALL relevant items found in Graph Context.
-- Do not omit entities unless explicitly asked to summarize.
-- For incident-related questions, explain cause, affected equipment, and associated documents if available.
+# Instructions:
+# - Combine information from BOTH contexts whenever possible.
+# - Prefer facts found in the provided contexts.
+# - Do NOT invent information.
+# - If the answer cannot be determined from the provided contexts, say so.
+# - Explain relationships when they are relevant.
+# - Mention equipment IDs, document IDs, standards, and incident names exactly as provided.
+# - Keep answers concise but informative.
+# - When listing standards, incidents, related equipment, or relationships, include ALL relevant items found in Graph Context.
+# - Do not omit entities unless explicitly asked to summarize.
+# - For incident-related questions, explain cause, affected equipment, and associated documents if available.
 
-Vector Context:
-{context}
+# Vector Context:
+# {context}
 
-Graph Context:
-{graph_context}
+# Graph Context:
+# {graph_context}
 
-Question:
-{input}
+# Question:
+# {input}
 
-Answer:
-""")
+# Answer:
+# """)
 
-# question_answer_chain = create_stuff_documents_chain(
-#     llm,
-#     prompt
-# )
 
-# rag_chain = create_retrieval_chain(
-#     retriever,
-#     question_answer_chain
-# )
 
 
 def ask_question(query: str):
@@ -91,21 +95,166 @@ def ask_question(query: str):
         graph_context += "\n"
 
    
-    print("\n===== GRAPH CONTEXT =====")
-    print(graph_context)
-    print("=========================\n")
+    # print("\n===== GRAPH CONTEXT =====")
+    # print(graph_context)
+    # print("=========================\n")
+
+    # query_lower = query.lower()
+
+    # if any(word in query_lower for word in [
+    #     "lesson",
+    #     "learned",
+    #     "recurring",
+    #     "future risk",
+    #     "historical failure"
+    # ]):
+    #     selected_prompt = lessons_prompt
+
+    # elif any(word in query_lower for word in [
+    #     "maintenance",
+    #     "repair",
+    #     "service",
+    #     "inspection",
+    #     "failure"
+    # ]):
+    #     selected_prompt = maintenance_prompt
+
+    # elif any(word in query_lower for word in [
+    #     "compliance",
+    #     "audit",
+    #     "regulation",
+    #     "standard"
+    # ]):
+    #     selected_prompt = compliance_prompt
+
+    # else:
+    #     selected_prompt = general_prompt
+
+    agents = route_query(query)
+    if not agents:
+        agents = ["GENERAL"]
+    print(agents)
+
+    instructions = []
+
+    if "MAINTENANCE" in agents:
+
+        instructions.append("""
+        MAINTENANCE:
+                            
+        1. Historical Failures
+        2. Potential Risks
+        3. Recommended Inspections
+        4. Preventive Maintenance Actions
+        5. Relevant Standards
+        """)
+
+    if "LESSONS_LEARNED" in agents:
+
+        instructions.append("""
+        LESSONS LEARNED:
+                            
+        1. Identify recurring failures.
+        2. Identify patterns and root causes.
+        3. Extract lessons learned.
+        4. Predict future risks.
+        5. Recommend preventive actions.
+        6. Highlight any relevant standards.
+        """)
+
+    if "COMPLIANCE" in agents:
+
+        instructions.append("""
+        COMPLIANCE:
+        1. Applicable Standards
+        2. Compliance Evidence
+        3. Missing Evidence
+        4. Potential Compliance Gaps
+        5. Relevant Documents
+        """)
+
+    if "RCA" in agents:
+
+        instructions.append("""
+        ROOT CAUSE ANALYSIS:
+                            
+        1. Identify the failure event.
+        2. Determine the most likely root cause.
+        3. List supporting evidence.
+        4. Identify contributing factors.
+        5. Recommend corrective actions.
+        6. Recommend preventive actions.
+        """)
+    if "GENERAL" in agents:
+
+        instructions.append("""
+        - Use provided information only.
+        - Do not invent facts.
+        - Include all relevant graph relationships.
+        - Mention source documents when available.
+        - Combine Vector Context and Graph Context whenever possible.
+        """)
+    if "RISK_ASSESSMENT" in agents:
+
+        instructions.append("""
+        RISK ASSESSMENT:
+
+        1. Identify operational risks.
+        2. Predict potential future failures.
+        3. Assess reliability concerns.
+        4. Estimate potential impact.
+        5. Recommend mitigation actions.
+        6. Highlight high-risk components.
+        """)
+
+    selected_prompt = ChatPromptTemplate.from_template("""
+You are an Industrial Intelligence Assistant for manufacturing, maintenance, quality, and compliance operations.
+
+Use the provided information to answer the user's question.
+
+Information Sources:
+
+1. Vector Context
+- Contains relevant document excerpts retrieved from industrial documents.
+- Use it for detailed facts, procedures, measurements, incidents, reports, and document content.
+
+2. Graph Context
+- Contains entity relationships extracted from the knowledge graph.
+- Use it to understand connections between equipment, people, standards, documents, incidents, and locations.
+                                          
+If Graph Context contains relevant information, prioritize it.
+
+Vector Context:
+{context}
+
+Graph Context:
+{graph_context}
+
+Question:
+{input}
+
+Required Analysis/ Tasks to Perform:
+{instructions}
+
+- Use only information found in the provided contexts/ evidance.
+- Do NOT invent information.
+- If the answer cannot be determined from the provided contexts, say so.
+
+- Return a structured report with clear section headings.
+- For risk assessments, explain why each risk exists using evidence from the provided contexts.
+
+
+Answer:
+""")
+
 
     # # 5. Ask LLM
-    # response = question_answer_chain.invoke({
-    #     "input": query,
-    #     "context": vector_context,
-    #     "graph_context": graph_context
-    # })
-    messages = prompt.format_messages(
-    context=vector_context,
-    graph_context=graph_context,
-    input=query
-    )
+    messages = selected_prompt.format_messages(
+                    context=vector_context,
+                    graph_context=graph_context,
+                    input=query,
+                    instructions="\n".join(instructions)
+                )
 
     response = llm.invoke(messages)
 
