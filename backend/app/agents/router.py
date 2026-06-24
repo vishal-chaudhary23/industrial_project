@@ -46,6 +46,15 @@ RISK_ASSESSMENT
 - Identify high-risk failure patterns.
 - Recommend mitigation strategies.
 
+EQUIPMENT_360
+1. Equipment Overview
+2. Applicable Standards
+3. Historical Failures
+4. Related Equipment
+5. Associated Documents
+6. Operational Risks
+7. Maintenance Recommendations
+
 
 Return ONLY a JSON array.
 
@@ -78,6 +87,12 @@ Question:
 Answer:
 ["RCA"]
 
+Question:
+"Show me everything about Pump P-101"
+
+Answer:
+["EQUIPMENT_360"]
+
 
 Question:
 "What should I know before servicing P-101 based on historical failures?"
@@ -96,6 +111,17 @@ Question:
 Answer:
 ["RISK_ASSESSMENT","LESSONS_LEARNED"]
 
+Question:
+"Give me a complete overview of P-101"
+
+Answer:
+["EQUIPMENT_360"]
+
+Question:
+"Summarize all information about Pump P-101"
+
+Answer:
+["EQUIPMENT_360"]
 
 Question:
 {query}

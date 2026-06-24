@@ -140,13 +140,18 @@ def ask_question(query: str):
     if "MAINTENANCE" in agents:
 
         instructions.append("""
-        MAINTENANCE:
-                            
+        MAINTENANCE ANALYSIS
+
         1. Historical Failures
         2. Potential Risks
         3. Recommended Inspections
         4. Preventive Maintenance Actions
         5. Relevant Standards
+        6. Priority Level (Low/Medium/High)
+        7. Immediate Actions
+
+        Return actionable recommendations.
+
         """)
 
     if "LESSONS_LEARNED" in agents:
@@ -160,17 +165,32 @@ def ask_question(query: str):
         4. Predict future risks.
         5. Recommend preventive actions.
         6. Highlight any relevant standards.
+                            
+        Focus on preventing recurrence.
+
         """)
 
     if "COMPLIANCE" in agents:
 
         instructions.append("""
-        COMPLIANCE:
-        1. Applicable Standards
-        2. Compliance Evidence
-        3. Missing Evidence
-        4. Potential Compliance Gaps
-        5. Relevant Documents
+        COMPLIANCE ANALYSIS:
+        1. Applicable Standards and Regulations.
+        2. Compliance Evidence Available.
+        3. Supporting Documents and Records.
+        4. Missing Compliance Evidence.
+        5. Potential Compliance Gaps.
+        6. Audit Readiness Status.
+        7. Recommended Compliance Actions.
+
+        
+        Use Graph Context relationships such as:
+        COMPLIES_WITH
+        REFERENCES
+        MENTIONED_IN
+
+        If evidence is unavailable,
+        explicitly state:
+        "No evidence found in the provided context."
         """)
 
     if "RCA" in agents:
@@ -184,6 +204,9 @@ def ask_question(query: str):
         4. Identify contributing factors.
         5. Recommend corrective actions.
         6. Recommend preventive actions.
+        7. Severity Assessment
+        
+        Focus on why the failure occurred.
         """)
     if "GENERAL" in agents:
 
@@ -205,6 +228,18 @@ def ask_question(query: str):
         4. Estimate potential impact.
         5. Recommend mitigation actions.
         6. Highlight high-risk components.
+        """)
+
+    if "EQUIPMENT_360" in agents:
+
+        instructions.append("""
+        1. Equipment Overview
+        2. Applicable Standards
+        3. Historical Failures
+        4. Related Equipment
+        5. Associated Documents
+        6. Operational Risks
+        7. Maintenance Recommendations
         """)
 
     selected_prompt = ChatPromptTemplate.from_template("""
@@ -243,7 +278,14 @@ Required Analysis/ Tasks to Perform:
 - Return a structured report with clear section headings.
 - For risk assessments, explain why each risk exists using evidence from the provided contexts.
 
+Return a structured report in Markdown.
 
+Use:
+# Main Sections
+## Subsections
+- Bullet points
+**Important findings**
+                                                       
 Answer:
 """)
 
@@ -292,11 +334,48 @@ Answer:
         min(vector_score + graph_bonus, 1.0) * 100,
         1
     )
+    graph_relations = len(graph_context.split("\n"))
+    failure_count = graph_context.count("FAILED_DUE_TO")
 
-    return {
-    "answer": response.content,
-    "retrieval_confidence": confidence,
-    "sources": sources
+    risk_score = min(
+        failure_count * 20,
+        100
+    )
+
+    if risk_score >= 80:
+        risk_level = "HIGH"
+
+    elif risk_score >= 50:
+        risk_level = "MEDIUM"
+
+    else:
+        risk_level = "LOW"
+
+    response_data = {
+        "answer": response.content,
+        "retrieval_confidence": confidence,
+        "sources": sources,
+        "agents_used": agents
     }
+
+    if (
+        "RISK_ASSESSMENT" in agents
+        or "EQUIPMENT_360" in agents
+        or "LESSONS_LEARNED" in agents
+    ):
+        response_data["risk_score"] = risk_score
+        response_data["risk_level"] = risk_level
+        
+
+    return response_data
+
+    # return {
+    # "answer": response.content,
+    # "retrieval_confidence": confidence,
+    # "sources": sources,
+    # "agents_used": agents,
+    # "risk_score": risk_score,
+    # "risk_level": risk_level
+    # }
 
 
