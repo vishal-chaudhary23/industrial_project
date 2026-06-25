@@ -28,6 +28,63 @@ Next.js
 
 ## Architecture
 
+                                   ┌─────────────────────────┐
+                                   │      React Frontend     │
+                                   │  Dashboard + AI Chat    │
+                                   └────────────┬────────────┘
+                                                │
+                                  Upload / Chat │ REST API
+                                                │
+                                   ┌────────────▼────────────┐
+                                   │     FastAPI Backend     │
+                                   │    API Gateway Layer    │
+                                   └───────┬────────┬────────┘
+                                           │        │
+                                 Upload API│        │Chat API
+                                           │        │
+                 ┌─────────────────────────┘        └────────────────────────┐
+                 │                                                           │
+      ┌──────────▼───────────┐                                  ┌────────────▼─────────────┐
+      │ Universal Parser     │                                  │ Multi-Agent Orchestrator │
+      │                      │                                  │                          │
+      │ PDF Parser           │                                  │ Query Classification     │
+      │ OCR Parser           │                                  │ Agent Selection          │
+      │ Image Parser         │                                  │ Context Fusion           │
+      │ Excel Parser         │                                  │ LLM Reasoning            │
+      │ Email Parser         │                                  └────────────┬─────────────┘
+      └──────────┬───────────┘                                               │
+                 │                                                           │
+                 ▼                                                           ▼
+      ┌──────────────────────┐                           ┌─────────────────────────────┐
+      │ Text Chunking        │                           │ Hybrid Retrieval            │
+      │ Metadata Extraction  │                           │                             │
+      └──────────┬───────────┘                           │ Vector Search               │
+                 │                                       │ BM25 Search                 │
+                 ▼                                       │ Graph Retrieval             │
+      ┌────────────────────────┐                         └─────────────┬───────────────┘
+      │ Entity Extraction LLM  │                                       │
+      └──────────┬─────────────┘                                       │
+                 │                                                     │
+      ┌──────────▼─────────────┐                         ┌──────────────▼──────────────┐
+      │ Knowledge Graph Builder│                         │ Pinecone Vector Database    │
+      │                        │                         │ BGE-M3 Embeddings           │
+      └──────────┬─────────────┘                         └─────────────────────────────┘
+                 │
+                 ▼
+      ┌────────────────────────┐
+      │ Neo4j Graph Database   │
+      │ Entities               │
+      │ Relationships          │
+      └──────────┬─────────────┘
+                 │
+                 ▼
+      ┌────────────────────────┐
+      │ Groq Llama 3.3 70B LLM │
+      │ Final Answer Generation│
+      └──────────┬─────────────┘
+                 │
+                 ▼
+          JSON Response
 
 
 ## Roadmap
