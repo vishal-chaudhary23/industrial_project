@@ -39,7 +39,7 @@ async def upload_document(file: UploadFile = File(...)):
     with open(file_path, "wb") as f:
         f.write(await file.read())
 
-    chunks = ingest_document(file_path)
+    # chunks = ingest_document(file_path)
 
     result = ingest_document(file_path)
 
