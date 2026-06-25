@@ -132,9 +132,9 @@ Question:
     return json.loads(response.content)
 
 
-print(
-    route_query(
-        "What should I know before servicing Pump P-101 based on historical failures and Why did P-101 fail?"
-        # "Why did P-101 fail?"
-    )
-)
+# print(
+#     route_query(
+#         "What should I know before servicing Pump P-101 based on historical failures and Why did P-101 fail?"
+#         # "Why did P-101 fail?"
+#     )
+# )

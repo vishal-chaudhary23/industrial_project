@@ -1,6 +1,6 @@
 import fitz
 
-def extract_text(pdf_path):
+def extract_pdf(pdf_path):
 
     doc = fitz.open(pdf_path)
 
@@ -9,4 +9,4 @@ def extract_text(pdf_path):
     for page in doc:
         text += page.get_text()
 
-    return text
+    return text, "PDF Parcer"

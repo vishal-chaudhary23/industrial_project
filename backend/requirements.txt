@@ -14,3 +14,7 @@ pinecone-client==3.2.2
 pinecone-text==0.11.0
 langchain-neo4j
 neo4j
+easyocr
+pandas 
+openpyxl
+extract-msg
