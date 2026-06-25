@@ -10,10 +10,14 @@ AI-powered memory graph that preserves operational knowledge and provides mainte
 
 ![interface](screenshots/interface.png)
 
+![response_1](response_1.png)
 
 ![response](screenshots/response.png)
 
-![knowledge_graph](screenshots/knowledge_graph.png)
+![knowledge_graph](knowledge_graph.png)
+
+
+
 
 ## Features
 
