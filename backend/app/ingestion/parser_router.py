@@ -3,7 +3,11 @@ import os
 from app.ingestion.pdf_parser import extract_pdf
 from app.ingestion.ocr_parser import extract_image
 from app.ingestion.excel_parser import extract_excel
-from app.ingestion.email_parser import extract_email
+# from app.ingestion.email_parser import extract_email
+from app.ingestion.email_parser import (
+    extract_msg_email,
+    extract_eml_email
+)
 
 
 def extract_document(file_path):
@@ -19,8 +23,13 @@ def extract_document(file_path):
     elif extension in [".xlsx", ".xls"]:
         return extract_excel(file_path)
 
-    elif extension in [".msg", ".eml"]:
-        return extract_email(file_path)
+    # elif extension in [".msg", ".eml"]:
+    #     return extract_email(file_path)
+    elif extension == ".msg":
+        return extract_msg_email(file_path)
+
+    elif extension == ".eml":
+        return extract_eml_email(file_path)
 
     else:
         raise ValueError(f"Unsupported file type: {extension}")

@@ -538,6 +538,7 @@ export default function ChatPanel() {
             )
 
           }
+          
           {/* Footer */}
 
           <div className="rounded-2xl bg-slate-900 border border-slate-800 p-6">
@@ -672,6 +673,8 @@ export default function ChatPanel() {
             </h3>
 
           </div>
+
+          
 
         </div>
 

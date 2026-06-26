@@ -27,50 +27,6 @@ from app.agents.router import route_query
 
 
 
-# prompt = ChatPromptTemplate.from_template("""
-# You are an Industrial Intelligence Assistant for manufacturing, maintenance, quality, and compliance operations.
-
-# Use the provided information to answer the user's question.
-
-# Information Sources:
-
-# 1. Vector Context
-# - Contains relevant document excerpts retrieved from industrial documents.
-# - Use it for detailed facts, procedures, measurements, incidents, reports, and document content.
-
-# 2. Graph Context
-# - Contains entity relationships extracted from the knowledge graph.
-# - Use it to understand connections between equipment, people, standards, documents, incidents, and locations.
-                                          
-# If Graph Context contains relevant information, prioritize it.
-
-# Instructions:
-# - Combine information from BOTH contexts whenever possible.
-# - Prefer facts found in the provided contexts.
-# - Do NOT invent information.
-# - If the answer cannot be determined from the provided contexts, say so.
-# - Explain relationships when they are relevant.
-# - Mention equipment IDs, document IDs, standards, and incident names exactly as provided.
-# - Keep answers concise but informative.
-# - When listing standards, incidents, related equipment, or relationships, include ALL relevant items found in Graph Context.
-# - Do not omit entities unless explicitly asked to summarize.
-# - For incident-related questions, explain cause, affected equipment, and associated documents if available.
-
-# Vector Context:
-# {context}
-
-# Graph Context:
-# {graph_context}
-
-# Question:
-# {input}
-
-# Answer:
-# """)
-
-
-
-
 def ask_question(query: str):
 
     # 1. Vector retrieval
@@ -99,36 +55,6 @@ def ask_question(query: str):
     # print(graph_context)
     # print("=========================\n")
 
-    # query_lower = query.lower()
-
-    # if any(word in query_lower for word in [
-    #     "lesson",
-    #     "learned",
-    #     "recurring",
-    #     "future risk",
-    #     "historical failure"
-    # ]):
-    #     selected_prompt = lessons_prompt
-
-    # elif any(word in query_lower for word in [
-    #     "maintenance",
-    #     "repair",
-    #     "service",
-    #     "inspection",
-    #     "failure"
-    # ]):
-    #     selected_prompt = maintenance_prompt
-
-    # elif any(word in query_lower for word in [
-    #     "compliance",
-    #     "audit",
-    #     "regulation",
-    #     "standard"
-    # ]):
-    #     selected_prompt = compliance_prompt
-
-    # else:
-    #     selected_prompt = general_prompt
 
     agents = route_query(query)
     if not agents:
@@ -286,6 +212,16 @@ Use:
 - Bullet points
 **Important findings**
                                                        
+You MUST answer only using the retrieved context.
+
+If the requested equipment, standard, document, or incident is not present in the retrieved context, reply exactly:
+
+"No information was found for this query in the uploaded documents."
+
+Never infer or substitute a similar equipment.
+Never answer using another pump.
+Never guess.
+                                                       
 Answer:
 """)
 
@@ -335,12 +271,38 @@ Answer:
         1
     )
     graph_relations = len(graph_context.split("\n"))
+    
     failure_count = graph_context.count("FAILED_DUE_TO")
 
-    risk_score = min(
-        failure_count * 20,
-        100
-    )
+    risk_score = failure_count * 20
+
+    vector_text = vector_context.lower()
+
+    high_keywords = [
+        "critical",
+        "catastrophic",
+        "shutdown",
+        "major failure",
+        "severe",
+    ]
+
+    medium_keywords = [
+        "warning",
+        "abnormal",
+        "vibration",
+        "overheating",
+        "leak",
+    ]
+
+    for word in high_keywords:
+        if word in vector_text:
+            risk_score += 15
+
+    for word in medium_keywords:
+        if word in vector_text:
+            risk_score += 5
+
+    risk_score = min(risk_score, 100)
 
     if risk_score >= 80:
         risk_level = "HIGH"

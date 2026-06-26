@@ -105,36 +105,36 @@ export default function Navigation() {
 
 <div className="px-5 py-6">
 
-    <div className="rounded-2xl bg-slate-800 border border-slate-700 p-5">
+    <div className="rounded-3xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-blue-500/40 shadow-xl shadow-blue-500/10 p-6">
 
-        <h3 className="text-lg font-bold mb-4">
+        <h3 className="text-xl font-bold text-cyan-30 mb-2">
             AI Platform
         </h3>
 
         <div className="space-y-3 text-sm">
 
             <div className="flex justify-between">
-                <span className="text-slate-400">LLM</span>
+                <span className="font-semibold text-blue-300">LLM</span>
                 <span>Groq</span>
             </div>
 
             <div className="flex justify-between">
-                <span className="text-slate-400">Graph DB</span>
+                <span className="font-semibold text-blue-300">Graph DB</span>
                 <span>Neo4j</span>
             </div>
 
             <div className="flex justify-between">
-                <span className="text-slate-400">Vector DB</span>
+                <span className="font-semibold text-blue-300">Vector DB</span>
                 <span>Pinecone</span>
             </div>
 
             <div className="flex justify-between">
-                <span className="text-slate-400">Embeddings</span>
+                <span className="font-semibold text-blue-300">Embeddings</span>
                 <span>BGE-M3</span>
             </div>
 
             <div className="flex justify-between">
-                <span className="text-slate-400">Search</span>
+                <span className="font-semibold text-blue-300">Search</span>
                 <span>Hybrid</span>
             </div>
 
