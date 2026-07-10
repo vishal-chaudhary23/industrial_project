@@ -2,7 +2,7 @@ uploads
 __pycache__
 *.pyc
 .env
-venv
-.venv
+myvenv
+.myvenv
 .git
 .gitignore

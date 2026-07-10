@@ -18,4 +18,3 @@ easyocr
 pandas 
 openpyxl
 extract-msg
-opencv-python-headless
