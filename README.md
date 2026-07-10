@@ -8,6 +8,17 @@ Knowledge fragmentation and loss of operational expertise in industrial organiza
 
 AI-powered memory graph that preserves operational knowledge and provides maintenance and compliance intelligence.
 
+![interface](screenshots/interface.png)
+
+![response_1](response_1.png)
+
+![response](screenshots/response.png)
+
+![knowledge_graph](knowledge_graph.png)
+
+
+
+
 ## Features
 
 - Universal document ingestion
@@ -88,3 +99,5 @@ Next.js
 
 
 ## Roadmap
+
+In progress

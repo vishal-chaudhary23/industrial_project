@@ -1,17 +1,26 @@
-venv/
-myvenv/
-.env
+# Python
+backend/myvenv/
+backend/__pycache__/
+backend/**/*.pyc
 
-__pycache__/
-*.pyc
+# Node
+frontend/node_modules/
+frontend/dist/
 
-uploads/
+# Environment files
+frontend/.env
+backend/.env
 
-node_modules/
+# Uploads
+backend/uploads/
 
-.next/
-
-.idea/
+# IDE
 .vscode/
+.idea/
 
+# OS
 .DS_Store
+Thumbs.db
+
+# Git
+.git

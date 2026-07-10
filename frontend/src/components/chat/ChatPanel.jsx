@@ -16,7 +16,7 @@ import {
   CheckCircle2,
 } from "lucide-react";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function ChatPanel() {
 
@@ -128,6 +128,18 @@ export default function ChatPanel() {
           value={query}
 
           onChange={(e)=>setQuery(e.target.value)}
+
+            onKeyDown={(e) => {
+
+                if (e.key === "Enter" && !e.shiftKey) {
+
+                    e.preventDefault();
+
+                    askQuestion();
+
+                }
+
+            }}
 
           placeholder="Example: Give me complete history of Pump P-101..."
 

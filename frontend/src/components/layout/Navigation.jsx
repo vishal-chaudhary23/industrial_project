@@ -10,10 +10,15 @@ import {
   Database,
   FileSpreadsheet,
   Image,
-  Mail
+  Mail,
+
+  Brain,
+  Network,
+  Sparkles,
+  Search
 } from "lucide-react";
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = import.meta.env.VITE_API_URL;
 
 export default function Navigation() {
 
@@ -67,6 +72,55 @@ export default function Navigation() {
 
   }
 
+  function PlatformItem({
+
+    icon,
+    title,
+    value,
+    last = false
+
+}){
+
+    return(
+
+        <div>
+
+            <div className="flex items-center justify-between">
+
+                <div className="flex items-center gap-3">
+
+                    {icon}
+
+                    <span className="text-slate-300 font-medium">
+
+                        {title}
+
+                    </span>
+
+                </div>
+
+                <span className="text-white font-semibold">
+
+                    {value}
+
+                </span>
+
+            </div>
+
+            {
+
+                !last &&
+
+                <div className="mt-4 border-b border-slate-700"></div>
+
+            }
+
+        </div>
+
+    );
+
+}
+
   return(
 
     <aside className="w-80 bg-slate-900 border-r border-slate-800 flex flex-col">
@@ -105,38 +159,44 @@ export default function Navigation() {
 
 <div className="px-5 py-6">
 
-    <div className="rounded-3xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-blue-500/40 shadow-xl shadow-blue-500/10 p-6">
+    <div className="rounded-3xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-blue-500/40  p-6">
 
-        <h3 className="text-xl font-bold text-cyan-30 mb-2">
+        <h3 className="text-xl font-bold text-white mb-2">
             AI Platform
         </h3>
 
-        <div className="space-y-3 text-sm">
+        <div className="space-y-4">
 
-            <div className="flex justify-between">
-                <span className="font-semibold text-blue-300">LLM</span>
-                <span>Groq</span>
-            </div>
+            <PlatformItem
+                icon={<Brain size={18} className="text-cyan-400" />}
+                title="LLM"
+                value="Groq"
+            />
 
-            <div className="flex justify-between">
-                <span className="font-semibold text-blue-300">Graph DB</span>
-                <span>Neo4j</span>
-            </div>
+            <PlatformItem
+                icon={<Network size={18} className="text-blue-400" />}
+                title="Graph DB"
+                value="Neo4j"
+            />
 
-            <div className="flex justify-between">
-                <span className="font-semibold text-blue-300">Vector DB</span>
-                <span>Pinecone</span>
-            </div>
+            <PlatformItem
+                icon={<Database size={18} className="text-green-400" />}
+                title="Vector DB"
+                value="Pinecone"
+            />
 
-            <div className="flex justify-between">
-                <span className="font-semibold text-blue-300">Embeddings</span>
-                <span>BGE-M3</span>
-            </div>
+            <PlatformItem
+                icon={<Sparkles size={18} className="text-pink-400" />}
+                title="Embeddings"
+                value="MiniLM-L6"
+            />
 
-            <div className="flex justify-between">
-                <span className="font-semibold text-blue-300">Search</span>
-                <span>Hybrid</span>
-            </div>
+            <PlatformItem
+                icon={<Search size={18} className="text-purple-400" />}
+                title="Search"
+                value="Hybrid"
+                last
+            />
 
         </div>
 

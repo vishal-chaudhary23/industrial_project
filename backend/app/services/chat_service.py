@@ -206,11 +206,25 @@ Required Analysis/ Tasks to Perform:
 
 Return a structured report in Markdown.
 
-Use:
-# Main Sections
-## Subsections
-- Bullet points
-**Important findings**
+                             
+Output Format Requirements
+
+- Use exactly ONE H1 (#) for the report title.
+- Use H2 (##) for every major section.
+- Do NOT use H3 unless absolutely necessary.
+- Use bullet points (-) for lists.
+- Bold (**) only important entities such as:
+  - Equipment IDs
+  - Standards
+  - Incident IDs
+  - Risk Level
+  - Dates
+- Leave one blank line between sections.
+- Never use markdown tables.
+- Never expose graph relationships like FAILED_DUE_TO or COMPLIES_WITH.
+- Convert graph relationships into natural language.                                    
+                                                       
+Present structured information as bullet lists.
                                                        
 You MUST answer only using the retrieved context.
 
